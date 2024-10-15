@@ -22,20 +22,20 @@
         $sprint = $stmt->fetch();
 
         function getDiasUteis($aPartirDe, $quantidadeDeDias = 30) {
-            echo $aPartirDe;
+            // echo $aPartirDe;
             $timezone = new DateTimeZone('america/sao_paulo');
 
-            $dateTime = DateTime::createFromFormat('d/m/Y', $aPartirDe, $timezone);
-            print_r($dateTime);
+            $dateTime = DateTime::createFromFormat('Y-m-d', $aPartirDe, $timezone);
+            // print_r($dateTime);
             $listaDiasUteis = [];
             $contador = 0;
             while ($contador < $quantidadeDeDias) {
                 $dateTime->modify('+1 weekday'); // adiciona um dia pulando finais de semana
                 $data = $dateTime->format('Y-m-d');
-                if (!isFeriado($data)) {
+                // if (!isFeriado($data)) {
                     $listaDiasUteis[] = $data;
                     $contador++;
-                }
+                // }
             }
         
             return $listaDiasUteis;
@@ -43,7 +43,7 @@
 
         $diasUteis = getDiasUteis($sprint['data_inicio'], 14); 
 
-        echo ($diasUteis);
+        print_r($diasUteis);
         
         print_r($sprint);
         
