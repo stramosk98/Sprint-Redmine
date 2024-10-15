@@ -20,6 +20,32 @@
         $stmt->execute();
         
         $sprint = $stmt->fetch();
+
+        function getDiasUteis($aPartirDe, $quantidadeDeDias = 30) {
+            echo $aPartirDe;
+            $timezone = new DateTimeZone('america/sao_paulo');
+
+            $dateTime = DateTime::createFromFormat('d/m/Y', $aPartirDe, $timezone);
+            print_r($dateTime);
+            $listaDiasUteis = [];
+            $contador = 0;
+            while ($contador < $quantidadeDeDias) {
+                $dateTime->modify('+1 weekday'); // adiciona um dia pulando finais de semana
+                $data = $dateTime->format('Y-m-d');
+                if (!isFeriado($data)) {
+                    $listaDiasUteis[] = $data;
+                    $contador++;
+                }
+            }
+        
+            return $listaDiasUteis;
+        }
+
+        $diasUteis = getDiasUteis($sprint['data_inicio'], 14); 
+
+        echo ($diasUteis);
+        
+        print_r($sprint);
         
     } catch (PDOException $e) { 
         print("Erro ao conectar com o banco de dados...<br>" . $e->getMessage());
@@ -38,7 +64,7 @@
 </head>
 <body class="container">
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <h1><?php echo $sprint['nome']; ?></h1>
@@ -64,6 +90,7 @@
 
     <script>
         async function getData(tarefasId) {
+            if (!tarefasId) return;
             const url = "https://api.allorigins.win/get?url=" + encodeURIComponent(`http://fabtec.ifc-riodosul.edu.br/issues.json?issue_id=${tarefasId}&key=b7c238adc2c0af943c1f0fa9de6489ce190bd6d5&status_id=*`);
             try {
                 const response = await fetch(url);
@@ -86,7 +113,12 @@
                 console.error(error.message);
             }
         }
-        getData('186,187');
+        let tasks = <?php echo json_encode($sprint['tasks']); ?>;
+        getData(tasks);
+        function voltar(){
+            window.location.replace('http://127.0.0.1/index.php')
+        }
     </script>
+    <button class="btn btn-primary mt-2" onclick="voltar()" type="button">Voltar</button>
 </body>
 </html>

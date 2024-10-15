@@ -80,7 +80,7 @@
             }
         
             $conexao->commit();
-            header('location: view.php');
+            header('location: view.php?acao=visualizar&id='. $sprintId);
         } catch (Exception $e) {
             $conexao->rollBack();
             echo 'Erro ao inserir dados: ' . $e->getMessage();
