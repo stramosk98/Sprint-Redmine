@@ -2,10 +2,19 @@
     include_once("config.php");
     
     $conexao = criaConexao();
-    $sprint = arraySprint();
-    if ($sprint) {
-        inserir($sprint, $conexao);
+
+    $acao = isset($_GET['acao']) ? $_GET['acao'] : "";
+    $id = isset($_GET['id']) ? $_GET['id'] : "";
+
+    if ($acao == 'excluir' && $id) {
+        excluir($id, $conexao);
+    } else {
+        $sprint = arraySprint();
+        if ($sprint) {
+            inserir($sprint, $conexao);
+        }
     }
+
 
     function arraySprint(){
             $sprint = array(
@@ -17,7 +26,7 @@
             return $sprint;
     }
 
-    function criaConexao(){
+    function criaConexao() {
         try{
             return new PDO(MYSQL_DSN,DB_USER,DB_PASSWORD);
         }catch(PDOException $e){
@@ -29,7 +38,7 @@
         }
     }
 
-    function inserir($sprint, $conexao){
+    function inserir($sprint, $conexao) {
         try {
             $conexao->beginTransaction();
         
@@ -51,13 +60,11 @@
             if (!empty($sprint['tasks'])) {
                 foreach ($sprint['tasks'] as $task) {
                 
-                    $queryTarefa = 'INSERT INTO tarefas (id, descricao) 
-                                    VALUES (:id, :tarefa_descricao);';
+                    $queryTarefa = 'INSERT INTO tarefas (id) 
+                                    VALUES (:id);';
 
                     $stmtTarefa = $conexao->prepare($queryTarefa);
-
                     $stmtTarefa->bindValue(':id', $task);
-                    $stmtTarefa->bindValue(':tarefa_descricao', "null");
                     
                     if (!$stmtTarefa->execute()) {
                         throw new Exception('Erro ao inserir tarefa');
@@ -84,6 +91,36 @@
         } catch (Exception $e) {
             $conexao->rollBack();
             echo 'Erro ao inserir dados: ' . $e->getMessage();
+        }    
+    }
+
+    function excluir($id, $conexao) {
+        try {
+            $conexao->beginTransaction();
+
+            $querySprintTarefa = 'DELETE FROM sprint_tarefas WHERE sprint_id = :sprint_id;';
+
+            $stmtSprintTarefa = $conexao->prepare($querySprintTarefa);
+            $stmtSprintTarefa->bindValue(':sprint_id', $id);
+            
+            if (!$stmtSprintTarefa->execute()) {
+                throw new Exception('Erro ao excluir relação sprint/tarefa');
+            }
+            
+            $querySprint = 'DELETE FROM sprints WHERE id = :id;';
+
+            $stmtSprint = $conexao->prepare($querySprint);
+            $stmtSprint->bindValue(':id', $id);
+            
+            if (!$stmtSprint->execute()) {
+                throw new Exception('Erro ao excluir sprint');
+            }
+                
+            $conexao->commit();
+            header('location: index.php');
+        } catch (Exception $e) {
+            $conexao->rollBack();
+            echo 'Erro ao excluir dados: ' . $e->getMessage();
         }    
     }
 ?>

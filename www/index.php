@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
-    <script src="../js/script.js"></script>
+    <script src="js/script.js"></script>
  
     <title>Cadastro de sprint</title>
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
     <body class='container'>
     <div class="row">
       <div class="col-6">
-        <div class="card">
+        <div class="card" style="left:60%;">
           <div class="card-body">
 
     <h1>Cadastrar nova Sprint</h1>
@@ -70,7 +70,7 @@
         <hr>
 
     <div class="row">
-      <div class="col-xl">
+      <div class="col-12">
         <div class="card" style="width: 80rem;">
           <div class="card-body">
             <form action="" method="get" id='fpesquisa'>
@@ -84,10 +84,10 @@
             <table class='table table-striped table-hover'>
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Início</th>
-                        <th>Final</th>
-                        <th>Tarefas</th>
+                        <th class="col-2">Nome</th>
+                        <th class="col-1">Início</th>
+                        <th class="col-1">Final</th>
+                        <th class="col-5">Tarefas</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider" id='corpo'>
@@ -111,7 +111,8 @@
                         
                         foreach($sprints as $sprint){ 
                             $visualizar = '<a class="btn btn-warning" href=view.php?acao=visualizar&id='.$sprint['id'].'>Visualizar</a>';
-                            echo '</td><td>'.$sprint['nome'].'</td><td>'.$sprint['data_inicio'].'</td><td>'.$sprint['data_final'].'</td><td>'.$sprint['tarefas_id'].'</td><td>'.$visualizar.'</td></tr>';
+                            $excluir = '<a class="btn btn-danger" href=acao.php?acao=excluir&id='.$sprint['id'].'>Excluir</a>';
+                            echo '</td><td>'.$sprint['nome'].'</td><td>'.$sprint['data_inicio'].'</td><td>'.$sprint['data_final'].'</td><td class="text-truncate" style="max-width:10px">'.$sprint['tarefas_id'].'</td><td>'.$visualizar.'</td><td>'.$excluir.'</td></tr>';
                         }
                     }catch(PDOException $e){ 
                         print("Erro ao conectar com o banco de dados...<br>".$e->getMessage());
@@ -125,8 +126,6 @@
     </div>
     </div>
 </section>
-    <script src="../js/jquery-3.4.1.slim.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>

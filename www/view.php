@@ -21,37 +21,41 @@
         
         $sprint = $stmt->fetch();
 
-        function getDiasUteis($aPartirDe, $quantidadeDeDias = 30) {
-            // echo $aPartirDe;
-            $timezone = new DateTimeZone('america/sao_paulo');
+        $timezone = new DateTimeZone('america/sao_paulo');
+        $newInicio = DateTime::createFromFormat('Y-m-d', $sprint['data_inicio'], $timezone);
+        $newFinal = DateTime::createFromFormat('Y-m-d', $sprint['data_final'], $timezone);
+        $datas = $newInicio->format('d/m/Y') . ' à ' . $newFinal->format('d/m/Y');
 
-            $dateTime = DateTime::createFromFormat('Y-m-d', $aPartirDe, $timezone);
-            // print_r($dateTime);
-            $listaDiasUteis = [];
-            $contador = 0;
-            while ($contador < $quantidadeDeDias) {
-                $dateTime->modify('+1 weekday'); // adiciona um dia pulando finais de semana
+        function getDiasUteis($inicio, $final, $timezone) {
+            $dateTime = DateTime::createFromFormat('Y-m-d', $inicio, $timezone);
+            $listaDiasUteis = [$inicio];
+            while (true) {
+                $dateTime->modify('+1 weekday');
                 $data = $dateTime->format('Y-m-d');
-                // if (!isFeriado($data)) {
-                    $listaDiasUteis[] = $data;
-                    $contador++;
-                // }
+                $listaDiasUteis[] = $data;
+                if ($data == $final) {
+                    break;
+                }
             }
         
             return $listaDiasUteis;
         }
 
-        $diasUteis = getDiasUteis($sprint['data_inicio'], 14); 
-
-        print_r($diasUteis);
-        
-        print_r($sprint);
+        $diasUteis = getDiasUteis($sprint['data_inicio'], $sprint['data_final'], $timezone); 
         
     } catch (PDOException $e) { 
         print("Erro ao conectar com o banco de dados...<br>" . $e->getMessage());
         die();
     }
 ?>
+
+<script>
+    var tasks = <?php echo json_encode($sprint['tasks']); ?>;
+    var diasUteis = <?php echo json_encode($diasUteis); ?>;
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript"></script>
+<script src="js/burndown.js"></script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -61,13 +65,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Sprint</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h1><?php echo $sprint['nome']; ?></h1>
+                    <h2><?php echo $sprint['nome'] . " " . $datas; ?></h2>
                     <section id="view" class="row">
                         <table id="table_tasks" class="table ">
                             <thead>
@@ -85,40 +91,10 @@
                     </section>
                 </div>
             </div>
+            <h2 class="pt-4">Gráfico de Burndown</h2>
+            <div id="burndown_chart" style="width: 100%; height: 500px;"></div>
         </div>
     </div>
-
-    <script>
-        async function getData(tarefasId) {
-            if (!tarefasId) return;
-            const url = "https://api.allorigins.win/get?url=" + encodeURIComponent(`http://fabtec.ifc-riodosul.edu.br/issues.json?issue_id=${tarefasId}&key=b7c238adc2c0af943c1f0fa9de6489ce190bd6d5&status_id=*`);
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`);
-                }
-
-                const json = await response.json();
-                let tarefas = [];
-                const jsonFormatted = JSON.parse(json.contents);
-                
-                jsonFormatted.issues.forEach((issue, index) => {
-                    console.log(issue)
-                    let inicio = new Date(issue.created_on);
-                    let termino = new Date(issue.closed_on);
-                    const row = `<td>${++index}</td><td>${issue.id}</td><td>${issue.subject}</td><td>${issue.author.name}</td><td>${issue.assigned_to.name}</td>`;
-                    document.getElementById('table_tasks_body').innerHTML += row;
-                });
-            } catch (error) {
-                console.error(error.message);
-            }
-        }
-        let tasks = <?php echo json_encode($sprint['tasks']); ?>;
-        getData(tasks);
-        function voltar(){
-            window.location.replace('http://127.0.0.1/index.php')
-        }
-    </script>
-    <button class="btn btn-primary mt-2" onclick="voltar()" type="button">Voltar</button>
+    <button class="btn btn-primary mt-2" type="button" onclick="voltar()" type="button">Voltar</button>
 </body>
 </html>
