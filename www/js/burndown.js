@@ -3,16 +3,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     async function getData(tarefasId) {
         if (!tarefasId) return;
-        const url = "https://api.allorigins.win/get?url=" + encodeURIComponent(`http://fabtec.ifc-riodosul.edu.br/issues.json?issue_id=${tarefasId}&key=b7c238adc2c0af943c1f0fa9de6489ce190bd6d5&status_id=*`);
+        const api = encodeURIComponent(`http://fabtec.ifc-riodosul.edu.br/issues.json?issue_id=${tarefasId}&key=b7c238adc2c0af943c1f0fa9de6489ce190bd6d5&status_id=*`);
+        const url = "https://api.allorigins.win/get?url=" + api;
+        const url1 = "https://cors-anywhere.herokuapp.com/" + api;
+        const url2 = "https://corsproxy.io/?" + api;
+        
         try {
-            const response = await fetch(url);
+            const response = await fetch(url2);
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
 
             const json = await response.json();
-            const jsonFormatted = JSON.parse(json.contents);
-            
+            const jsonFormatted = json.contents ? JSON.parse(json.contents) : json;  
+    
             let rows = '';
             jsonFormatted.issues.forEach((issue, index) => {
                 let d = new Date(issue.closed_on);

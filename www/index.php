@@ -15,7 +15,7 @@
     <body class='container'>
     <div class="row">
       <div class="col-6">
-        <div class="card" style="left:60%;">
+        <div class="card" style="left:50%;">
           <div class="card-body">
 
     <h1>Cadastrar nova Sprint</h1>
@@ -71,7 +71,7 @@
 
     <div class="row">
       <div class="col-12">
-        <div class="card" style="width: 80rem;">
+        <div class="card" style="width: 80rem; right:15%;">
           <div class="card-body">
             <form action="" method="get" id='fpesquisa'>
              <div class='row'>
@@ -101,7 +101,8 @@
                             FROM sprints 
                             JOIN sprint_tarefas ON sprints.id = sprint_tarefas.sprint_id
                             JOIN tarefas ON tarefas.id = sprint_tarefas.tarefa_id
-                            GROUP BY sprints.id';
+                            GROUP BY sprints.id
+                            ORDER BY sprints.data_inicio';
 
                         $stmt = $conexao->prepare($query);
 
