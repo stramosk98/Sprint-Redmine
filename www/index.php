@@ -21,20 +21,26 @@
     <h1>Cadastrar nova Sprint</h1>
         <section id='view' class='row'>
             <form id="form-crud" action="acao.php" method="post">
-                    <div class='col'>
+                    <div class='col mb-3'>
                         <label for="nome">Nome:</label>
                         <input type="text" class='form-control' name='nome' id='nome' placeholder="Sprint 2.0">
                     </div>
-                    <div class='col'>
-                        <label for="data-inicio">Data Início:</label>
-                        <input type="date" class='form-control' name='data-inicio' id='data-inicio'>
+                    <div class='col mb-3'>
+                        <label for="descricao">Descrição:</label>
+                        <input type="text" class='form-control' name='descricao' id='descricao' placeholder="Descrição da sprint...">
                     </div>
-                    <div class='col'>
-                        <label for="data-final">Data Final:</label>
-                        <input type="date" class='form-control' name='data-final' id='data-final'>
+                    <div class="row px-3 mb-3">
+                        <div class='col-6'>
+                            <label for="data-inicio">Data Início:</label>
+                            <input type="date" class='form-control' name='data-inicio' id='data-inicio'>
+                        </div>
+                        <div class='col-6 mb-3'>
+                            <label for="data-final">Data Final:</label>
+                            <input type="date" class='form-control' name='data-final' id='data-final'>
+                        </div>
                     </div>
                     <div class="row">
-                        <label class="col-3 pl-4" for="tasks-container">Tarefas</label>
+                        <label class="col-3 px-4" for="tasks-container">Tarefas</label>
                         <div class="col-1">
                             <button type="button" class="btn btn-success" onclick="addTask(event)" id="mais">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -42,7 +48,12 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="col-1">
+                    </div>
+                    <div class="row">
+                        <div id="tasks-container" class="col-10">
+                            <input type="text" class='form-control mb-1' name="tasks[]" id="tasks" placeholder="Tarefa id">
+                        </div>
+                        <div  class="col-1">
                             <button type="button" class="btn btn-danger" onclick="removeTask(event)" id="menos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
                                     <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
@@ -50,9 +61,6 @@
                             </button>
                         </div>
                     </div>
-                        <div id="tasks-container" class="col">
-                            <input type="text" class='form-control mb-1' name="tasks[]" id="tasks" placeholder="Tarefa id">
-                        </div>
                     <div class='col'>  
                         <br>                  
                         <div class="form-group text-center">
@@ -113,7 +121,7 @@
                         foreach($sprints as $sprint){ 
                             $visualizar = '<a class="btn btn-warning" href=view.php?acao=visualizar&id='.$sprint['id'].'>Visualizar</a>';
                             $excluir = '<a class="btn btn-danger" href=acao.php?acao=excluir&id='.$sprint['id'].'>Excluir</a>';
-                            echo '</td><td>'.$sprint['nome'].'</td><td>'.$sprint['data_inicio'].'</td><td>'.$sprint['data_final'].'</td><td class="text-truncate" style="max-width:10px">'.$sprint['tarefas_id'].'</td><td>'.$visualizar.'</td><td>'.$excluir.'</td></tr>';
+                            echo '</td><td>'.$sprint['nome'].'</td><td>'.$sprint['descricao'].'</td><td>'.$sprint['data_inicio'].'</td><td>'.$sprint['data_final'].'</td><td class="text-truncate" style="max-width:10px">'.$sprint['tarefas_id'].'</td><td>'.$visualizar.'</td><td>'.$excluir.'</td></tr>';
                         }
                     }catch(PDOException $e){ 
                         print("Erro ao conectar com o banco de dados...<br>".$e->getMessage());

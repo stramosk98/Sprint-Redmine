@@ -19,9 +19,10 @@
     function arraySprint(){
             $sprint = array(
                             'nome'        => isset($_POST['nome'])        ? $_POST['nome']        : "",
+                            'descricao'   => isset($_POST['descricao'])   ? $_POST['descricao']   : "",
                             'data-inicio' => isset($_POST['data-inicio']) ? $_POST['data-inicio'] : "",
                             'data-final'  => isset($_POST['data-final'])  ? $_POST['data-final']  : "",
-                            'tasks'       => isset($_POST['tasks'])       ? $_POST['tasks']  : []
+                            'tasks'       => isset($_POST['tasks'])       ? $_POST['tasks']       : []
                         );
             return $sprint;
     }
@@ -42,12 +43,13 @@
         try {
             $conexao->beginTransaction();
         
-            $querySprint = 'INSERT INTO sprints (nome, data_inicio, data_final) 
-                            VALUES (:nome, :data_inicio, :data_final);';
+            $querySprint = 'INSERT INTO sprints (nome, descricao, data_inicio, data_final) 
+                            VALUES (:nome, :descricao, :data_inicio, :data_final);';
 
             $stmtSprint = $conexao->prepare($querySprint);
 
             $stmtSprint->bindValue(':nome', $sprint['nome']);
+            $stmtSprint->bindValue(':descricao', $sprint['descricao']);
             $stmtSprint->bindValue(':data_inicio', $sprint['data-inicio']);
             $stmtSprint->bindValue(':data_final', $sprint['data-final']);
             
