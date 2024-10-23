@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         );
 
         var options = {
-          title: 'Horas trabalhadas'
+          title: 'Tarefas dentro do prazo'
         };
 
         var chart = new google.visualization.ColumnChart(document.getElementById('column_chart'));
