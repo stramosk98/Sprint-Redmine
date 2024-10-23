@@ -48,11 +48,6 @@
                                 </svg>
                             </button>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div id="tasks-container" class="col-10">
-                            <input type="text" class='form-control mb-1' name="tasks[]" id="tasks" placeholder="Tarefa id">
-                        </div>
                         <div  class="col-1">
                             <button type="button" class="btn btn-danger" onclick="removeTask(event)" id="menos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
@@ -61,6 +56,9 @@
                             </button>
                         </div>
                     </div>
+                        <div id="tasks-container" class="col-12">
+                            <input type="text" class='form-control mb-1' name="tasks[]" id="tasks" placeholder="Tarefa id">
+                        </div>
                     <div class='col'>  
                         <br>                  
                         <div class="form-group text-center">
@@ -93,9 +91,10 @@
                 <thead>
                     <tr>
                         <th class="col-2">Nome</th>
+                        <th class="col-5">Descrição</th>
                         <th class="col-1">Início</th>
                         <th class="col-1">Final</th>
-                        <th class="col-5">Tarefas</th>
+                        <th class="col-3">Tarefas</th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider" id='corpo'>

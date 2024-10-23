@@ -42,6 +42,11 @@
         }
 
         $diasUteis = getDiasUteis($sprint['data_inicio'], $sprint['data_final'], $timezone); 
+
+        $diasUteisFormatados = array_map(function ($data) use ($timezone) {
+            $newData = DateTime::createFromFormat('Y-m-d', $data, $timezone);
+            return $newData->format('d/m/Y');
+        }, $diasUteis);
         
     } catch (PDOException $e) { 
         print("Erro ao conectar com o banco de dados...<br>" . $e->getMessage());
@@ -52,6 +57,7 @@
 <script>
     var tasks = <?php echo json_encode($sprint['tasks']); ?>;
     var diasUteis = <?php echo json_encode($diasUteis); ?>;
+    var ultimoDia = <?php echo json_encode($sprint['data_final']); ?>;
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript"></script>
@@ -69,6 +75,25 @@
     <link rel="stylesheet" href="css/style.css"> 
 </head>
 <body class="container">
+
+    <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                    <h4 class="text-center"><?php echo $sprint['nome'] . " " . $datas; ?></h4>
+                    <h5><?php echo $sprint['descricao']; ?></h5>
+                    <h6>Dias úteis da sprint:</h6>
+                    <h6><?php echo implode(", ", $diasUteisFormatados); ?></h6>
+                    <h6>Desenvolvedores:</h6>
+                    <h6 id="participantes"></h6>
+                    <h6 id="horas_totais_trabalhadas"></h6>
+                    <h6 id="tarefas_concluidas"></h6>
+                    <h6 id="tarefas_atrasadas"></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -91,8 +116,11 @@
                     </section>
                 </div>
             </div>
-            <h2 class="pt-4">Gráfico de Burndown</h2>
-            <div id="burndown_chart" style="width: 100%; height: 500px;"></div>
+            <div class="row my-3 px-1">
+                <div id="burndown_chart" style="width: 65%; height: 400px;"></div>
+                <div id="pie_chart" style="width: 35%; height: 400px;"></div>
+            </div>
+            <div id="column_chart" style="width: 100%; height: 500px;"></div>
         </div>
     </div>
     <button class="btn btn-primary mt-2" type="button" onclick="voltar()" type="button">Voltar</button>
